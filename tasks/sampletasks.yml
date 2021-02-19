@@ -1,0 +1,25 @@
+# Sample tasks to be performed
+---
+    - name: UPDATE SERVERS
+      command: apt update
+
+    - name: Copy a sample bash profile
+      copy:
+        src: "/home/sid/YAML/ansible-learning/ansible-roles/test-role/files/.bash_profile"
+        dest: "~/.bash_profile"
+      become: false
+
+    - name: Add an environmental variable to the remote user's shell
+      lineinfile:
+        dest: "~/.bash_profile"
+        regexp: '^ENV_VAR='
+        line: 'ENV_VAR=value'
+      become: false
+
+    - name: Fetch the ENVIRONMENT VARIABLE
+      shell: 'echo $ENV_VAR'
+      register: foo
+
+    - name: Show the result
+      debug: msg=foo.stdout
+...

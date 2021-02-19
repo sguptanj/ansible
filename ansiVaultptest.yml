@@ -1,0 +1,22 @@
+# ansible-playbook ansiVaultptest.yml --ask-vault-pass
+# ansible-playbook ansiVaultptest.yml vault-password-file /vars/api-key-pass.txt
+# ansible-playbook ansiVaultptest.yml --vault-password-file /home/sid/remoteCodeBase/ansible/vars/api-key-pass.txt
+# ansible-playbook ansiVaultptest.yml 
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars_files:
+    - vars/api-key.yml
+
+  tasks:
+    - name: Echo the API key which was injected into the environment
+      shell: echo $API_KEY
+      environment:
+        API_KEY: "{{ myapp_api_key }}"
+      register: echo_result
+
+    - name: Show the result
+      debug: var=echo_result.stdout
+...
