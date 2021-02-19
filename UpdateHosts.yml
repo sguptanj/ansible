@@ -1,0 +1,31 @@
+---
+- name: Configuring updates on all servers
+  hosts: all
+  become: true
+
+  pre_tasks: 
+   - name: Load the variable files.
+     include_vars: "{{ item }}"
+     with_first_found:
+      - "vars/apache_{{ ansible_os_family }}.yml"
+      - "vars/apache_default.yml"
+
+  tasks:
+    - name: UPDATE SERVERS
+      command: apt update
+    - name: Copy a sample bash profile
+      copy:
+        src: "/home/sid/YAML/ansible-learning/ansible-roles/test-role/files/.bash_profile"
+        dest: "~/.bash_profile"
+      become: false
+    - name: Add an environmental variable to the remote user's shell
+      lineinfile:
+        dest: "~/.bash_profile"
+        regexp: '^ENV_VAR='
+        line: 'ENV_VAR=value'
+      become: false
+    - name: Fetch the ENVIRONMENT VARIABLE.
+      shell: 'echo $ENV_VAR'
+      register: foo
+    - debug: msg="The variable is {{ foo.stdout }}"
+...
